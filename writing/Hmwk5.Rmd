@@ -1,30 +1,40 @@
 ---
-title: "Hmwk5"
+title: "Homework 5 — Choice 1: Mapping Denver Homicides"
 author: "Tiffany Lipsey"
-date: "2026-08-07"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r install, eval = FALSE}
+install.packages(c("tidyverse", "sf", "tigris"))
 ```
 
-## Including Plots
+```{r libraries}
+library(tidyverse)   # dplyr, ggplot2, readr, forcats
+library(sf)          # simple features: spatial data as a data frame
+library(tigris)      # downloads Census TIGER/Line boundary files
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Cache the downloaded boundaries so tigris doesn't re-download every knit
+options(tigris_use_cache = TRUE)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Step 1 — Read the data
+
+The Washington Post file has a few non-UTF-8 characters in victim names, so
+`read_csv()` needs to be told the encoding or it will throw a parsing error.
+
+```{r read}
+homicides <- read_csv(
+  "../data/homicide-data.csv",
+  locale = locale(encoding = "Latin1")
+)
+
+dim(homicides)   # 52179 rows x 12 columns
+```
+
+Note the `../` in the path: this Rmd lives in `writing/`, so it has to step up one
+level to reach `data/`. (Knitting sets the working directory to the Rmd's folder.)
+
