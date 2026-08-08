@@ -90,7 +90,10 @@ denver_map <- ggplot() +
     fill      = "grey",
     color     = "black",
     linewidth = 0.3
-  )
+  ) 
+
+denver_map
+
 ```
 
 
