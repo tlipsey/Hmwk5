@@ -62,7 +62,7 @@ denver_tracts <- tracts(
   state  = "CO",
   county = "Denver",
   cb     = TRUE,  
-  year   = 2020
+  year   = 2010
 )
 
 ```
