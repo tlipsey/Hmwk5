@@ -23,6 +23,7 @@ options(tigris_use_cache = TRUE)
 homicides <- read_csv("../data/homicide-data.csv")
 
 dim(homicides)   # 52179 rows x 12 columns
+
 ```
 ## Step 2 - Filter for Denver and build two grouping variables
 ## Keep 3 most common race groups in Denver and put everything else into a single category
@@ -78,17 +79,17 @@ denver_sf <- st_transform(denver_sf, st_crs(denver_tracts))
 
 ```{r map, fig.width = 10, fig.height = 6}
 race_colors <- c(
-  "Black"           = "#0072B2",
-  "White"           = "#D55E00",
-  "Hispanic"        = "#009E73",
-  "All other races" = "#9467BD"
+  "Black"           = "blue",
+  "White"           = "red",
+  "Hispanic"        = "darkgreen",
+  "All other races" = "purple"
 )
 
 denver_map <- ggplot() +
   geom_sf(
     data      = denver_tracts,
-    fill      = "grey96",
-    color     = "grey97",
+    fill      = "lightblue",
+    color     = "black",
     linewidth = 0.35
   ) +
   geom_sf(
@@ -117,4 +118,23 @@ denver_map <- ggplot() +
 
 denver_map
 ```
+##The large area to the right is the Denver airport. Good news! There were no homicides from 2010 to 2017 at the airport!
+
+## Step 7 Save figure to figures/ directory
+
+```{r save, eval = FALSE}
+
+dir.create("figures")
+
+ggsave(
+  filename = here::here("figures", "denver-homicide-map.png"),
+  plot     = denver_map,
+  width    = 10,
+  height   = 6,
+  dpi      = 300
+)
+```
+
+
+
 
