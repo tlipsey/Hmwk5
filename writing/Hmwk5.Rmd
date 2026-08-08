@@ -55,4 +55,16 @@ denver_sf <- st_as_sf(denver, coords = c("lon", "lat"), crs = 4326)
 denver_sf
 ```
 
+## Step 4 — Download tract boundaries with tigris
+
+```{r tracts, results = "hide"}
+denver_tracts <- tracts(
+  state  = "CO",
+  county = "Denver")
+  
+```
+
+
+
+
 
