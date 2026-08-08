@@ -47,3 +47,12 @@ count(denver, victim_race)
 
 ```
 
+## Step 3 — Turn the points into an `sf` object
+
+```{r points}
+denver_sf <- st_as_sf(denver, coords = c("lon", "lat"), crs = 4326)
+
+denver_sf
+```
+
+
