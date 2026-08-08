@@ -58,6 +58,9 @@ denver_sf
 ## Step 4 — Download tract boundaries with tigris
 
 ```{r tracts, results = "hide"}
+
+options(tigris_use_cache = TRUE)
+
 denver_tracts <- tracts(
   state  = "CO",
   county = "Denver",
@@ -66,6 +69,10 @@ denver_tracts <- tracts(
 )
 
 ```
+
+## Step 5 — Put both layers in the same coordinate system
+
+
 
 
 
