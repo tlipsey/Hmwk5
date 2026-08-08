@@ -72,6 +72,13 @@ denver_tracts <- tracts(
 
 ## Step 5 — Put both layers in the same coordinate system
 
+```{r crs}
+st_crs(denver_tracts)$epsg   # 4269
+st_crs(denver_sf)$epsg       # 4326
+
+denver_sf <- st_transform(denver_sf, st_crs(denver_tracts))
+```
+
 
 
 
