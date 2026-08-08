@@ -86,14 +86,14 @@ denver_sf <- st_transform(denver_sf, st_crs(denver_tracts))
 race_colors <- c(
   "Black"           = "blue",
   "White"           = "red",
-  "Hispanic"        = "green",
+  "Hispanic"        = "darkgreen",
   "All other races" = "purple"
 )
 
 denver_map <- ggplot() +
   geom_sf(
     data      = denver_tracts,
-    fill      = "grey",
+    fill      = "lightblue",
     color     = "black",
     linewidth = 0.3
   ) +
