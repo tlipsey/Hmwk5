@@ -27,6 +27,7 @@ dim(homicides)
 ```
 
 ## Step 2 - Filter for Denver and build two grouping variables
+## Keep 3 most common race groups in Denver and put everything else into a single category
 
 ```{r denver}
 denver <- homicides %>%
@@ -70,7 +71,7 @@ denver_tracts <- tracts(
 
 ```
 
-## Step 5 — Put both layers in the same coordinate system
+## Step 5 Put both layers (sf from 3 and tracts from 4) in same coordinate system. Transform points into polygons CRS.
 
 ```{r crs}
 st_crs(denver_tracts)$epsg   # 4269
@@ -78,6 +79,20 @@ st_crs(denver_sf)$epsg       # 4326
 
 denver_sf <- st_transform(denver_sf, st_crs(denver_tracts))
 ```
+
+## Step 6 — Build the map
+
+```{r map, fig.width = 10, fig.height = 6}
+
+denver_map <- ggplot() +
+  geom_sf(
+    data      = denver_tracts,
+    fill      = "grey",
+    color     = "black",
+    linewidth = 0.3
+  )
+```
+
 
 
 
