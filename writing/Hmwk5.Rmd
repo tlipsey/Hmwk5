@@ -42,5 +42,8 @@ denver <- homicides %>%
     victim_race = fct_infreq(victim_race)          # order legend by frequency
   )
 
+count(denver, solved)
+count(denver, victim_race)
+
 ```
 
