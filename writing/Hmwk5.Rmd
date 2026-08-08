@@ -8,10 +8,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-```{r install, eval = FALSE}
-install.packages(c("tidyverse", "sf", "tigris"))
-```
-
 ```{r libraries}
 library(tidyverse)   # dplyr, ggplot2, readr, forcats
 library(sf)          # simple features: spatial data as a data frame
@@ -23,18 +19,102 @@ options(tigris_use_cache = TRUE)
 
 ## Step 1 — Read the data
 
-The Washington Post file has a few non-UTF-8 characters in victim names, so
-`read_csv()` needs to be told the encoding or it will throw a parsing error.
-
 ```{r read}
-homicides <- read_csv(
-  "../data/homicide-data.csv",
-  locale = locale(encoding = "Latin1")
-)
+homicides <- read_csv("../data/homicide-data.csv")
 
 dim(homicides)   # 52179 rows x 12 columns
 ```
+## Step 2 - Filter for Denver and build two grouping variables
+## Keep 3 most common race groups in Denver and put everything else into a single category
 
-Note the `../` in the path: this Rmd lives in `writing/`, so it has to step up one
-level to reach `data/`. (Knitting sets the working directory to the Rmd's folder.)
+```{r denver}
+denver <- homicides %>%
+  filter(city == "Denver") %>%
+  mutate(
+    lat = as.numeric(lat),
+    lon = as.numeric(lon),
+    solved = if_else(disposition == "Closed by arrest", "Solved", "Unsolved"),
+    solved = factor(solved, levels = c("Solved", "Unsolved")),
+    victim_race = fct_lump_n(
+      factor(victim_race),
+      n = 3,
+      other_level = "All other races"
+    ),
+    victim_race = fct_infreq(victim_race)          # order legend by frequency
+  ) %>%
+  filter(!is.na(lat), !is.na(lon))
+
+count(denver, solved)
+count(denver, victim_race)
+```
+## Step 3 Turn points into sf object
+
+```{r points}
+denver_sf <- st_as_sf(denver, coords = c("lon", "lat"), crs = 4326)
+
+denver_sf
+```
+
+## Step 4 Download tract boundaries with tigris
+
+```{r tracts, results = "hide"}
+denver_tracts <- tracts(
+  state  = "CO",
+  county = "Denver",
+  cb     = TRUE,
+  year   = 2020
+)
+```
+
+## Step 5 Put both layers (sf from 3 and tracts from 4) in same coordinate system. Transform points into polygons CRS.
+
+```{r crs}
+st_crs(denver_tracts)$epsg   # 4269
+st_crs(denver_sf)$epsg       # 4326
+
+denver_sf <- st_transform(denver_sf, st_crs(denver_tracts))
+```
+## Step 6 Build map
+
+```{r map, fig.width = 10, fig.height = 6}
+race_colors <- c(
+  "Black"           = "#0072B2",
+  "White"           = "#D55E00",
+  "Hispanic"        = "#009E73",
+  "All other races" = "#9467BD"
+)
+
+denver_map <- ggplot() +
+  geom_sf(
+    data      = denver_tracts,
+    fill      = "grey96",
+    color     = "grey97",
+    linewidth = 0.35
+  ) +
+  geom_sf(
+    data  = denver_sf,
+    aes(color = victim_race),
+    size  = 1.8,
+    alpha = 0.8
+  ) +
+  facet_wrap(~ solved) +
+  scale_color_manual(values = race_colors, name = "Victim race") +
+  labs(
+    title    = "Homicides in Denver, Colorado, 2010-2017",
+    subtitle = "Solved (closed by arrest) versus unsolved, by victim race",
+    caption  = paste(
+      "Source: Washington Post homicide database.",
+      "Tract boundaries: US Census Bureau via tigris."
+    )
+  ) +
+  theme_void(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    plot.title      = element_text(face = "bold"),
+    strip.text      = element_text(face = "bold", size = 12,
+                                   margin = margin(b = 6))
+  )
+
+denver_map
+```
 
