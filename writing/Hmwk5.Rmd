@@ -83,6 +83,12 @@ denver_sf <- st_transform(denver_sf, st_crs(denver_tracts))
 ## Step 6 — Build the map
 
 ```{r map, fig.width = 10, fig.height = 6}
+race_colors <- c(
+  "Black"           = "blue",
+  "White"           = "red",
+  "Hispanic"        = "green",
+  "All other races" = "purple"
+)
 
 denver_map <- ggplot() +
   geom_sf(
@@ -90,6 +96,12 @@ denver_map <- ggplot() +
     fill      = "grey",
     color     = "black",
     linewidth = 0.3
+  ) +
+  geom_sf(
+    data  = denver_sf,
+    aes(color = victim_race),
+    size  = 1.8,
+    alpha = 0.8
   ) 
 
 denver_map
