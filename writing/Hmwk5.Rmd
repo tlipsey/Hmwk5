@@ -127,6 +127,8 @@ denver_map <- ggplot() +
 denver_map
 
 ```
+##The large area to the right is the Denver airport. Good news! There were no homicides from 2010 to 2017 at the airport!
+
 
 
 
