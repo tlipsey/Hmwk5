@@ -105,6 +105,7 @@ denver_map <- ggplot() +
   )  +
   facet_wrap(~ solved) +
   scale_color_manual(values = race_colors, name = "Victim Race") +
+  scale_shape_manual(values = c(16, 17, 15, 18), name = "Victim Race") +
   labs(
     title    = "Homicides in Denver, Colorado, 2010-2017",
     subtitle = "Solved (closed by arrest) versus unsolved, by victim race",
