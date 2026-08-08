@@ -60,8 +60,11 @@ denver_sf
 ```{r tracts, results = "hide"}
 denver_tracts <- tracts(
   state  = "CO",
-  county = "Denver")
-  
+  county = "Denver",
+  cb     = TRUE,  
+  year   = 2020
+)
+
 ```
 
 
