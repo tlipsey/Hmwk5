@@ -104,15 +104,24 @@ denver_map <- ggplot() +
     alpha = 0.8
   )  +
   facet_wrap(~ solved) +
-  scale_color_manual(values = race_colors, name = "Victim race") +
+  scale_color_manual(values = race_colors, name = "Victim Race") +
   labs(
     title    = "Homicides in Denver, Colorado, 2010-2017",
     subtitle = "Solved (closed by arrest) versus unsolved, by victim race",
     caption  = paste(
       "Source: Washington Post homicide database.",
       "Tract boundaries: US Census Bureau via tigris."
-    ))
-
+    )
+    ) +
+  theme_void(base_size = 12) +
+  theme(
+  legend.position = "bottom",
+  plot.title      = element_text(face = "bold", hjust = 0.5),
+  plot.subtitle   = element_text(hjust = 0.5),
+  plot.caption    = element_text(hjust = 0.5),
+  strip.text      = element_text(face = "bold", size = 12,
+                                 margin = margin(b = 6))
+)
 
 denver_map
 
